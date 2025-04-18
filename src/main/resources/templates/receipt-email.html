@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Ваш чек</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; margin-bottom: 20px; }
+        .footer { margin-top: 20px; font-size: 0.8em; color: #666; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Ваш чек №<span th:text="${orderNumber}"></span></h1>
+    </div>
+
+    <p>Благодарим за покупку! Ваш чек прикреплен к этому письму.</p>
+
+    <div class="footer">
+        <p>С уважением,<br>Команда магазина</p>
+    </div>
+</div>
+</body>
+</html>
