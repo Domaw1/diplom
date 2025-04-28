@@ -7,19 +7,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.OAuth2AuthorizationSuccessHandler;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -32,7 +28,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import ru.degree.shop.DTO.token.JwtAuthenticationDto;
-import ru.degree.shop.exception.NotFoundException;
 import ru.degree.shop.model.Role;
 import ru.degree.shop.model.User;
 import ru.degree.shop.repository.UserRepository;
@@ -41,11 +36,9 @@ import ru.degree.shop.service.JwkService;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import java.security.interfaces.RSAPublicKey;
-import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Configuration
 @EnableWebSecurity
@@ -80,9 +73,10 @@ public class SecurityConfig {
                                         "/api/v1/user/refresh-token","/api/v1/user/profile",
                                         "/api/v1/reviews", "/api/v1/order","/api/v1/order/user",
                                         "/api/v1/cart/user", "/api/v1/wishlist/user", "/api/v1/wishlist",
-                                        "/api/v1/cart/clear", "/api/v1/cart/post", "/api/v1/cart",
-                                        "/api/v1/email/send-receipt", "/api/v1/order/user/{id}"
+                                        "/api/v1/cart/clear", "/api/v1/cart/post", "/api/v1/cart","/api/v1/order/user/{id}"
                                 )
+                                .authenticated()
+                                .requestMatchers(HttpMethod.POST, "/api/v1/email/send-receipt")
                                 .authenticated()
                                 .requestMatchers("/api/v1/products/create", "/api/v1/products/delete/{id}")
                                 .hasAnyRole("ADMIN")

@@ -2,6 +2,8 @@ package ru.degree.shop.service.impl;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import ru.degree.shop.DTO.order.OrderGetDto;
 import ru.degree.shop.exception.EmptyCartException;
@@ -27,7 +29,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderGetDto> getUserOrders(String email) {
-        return orderMapper.ordersToOrderGetDtoList(orderRepository.findAllByUser_Email(email)
+        return orderMapper.ordersToOrderGetDtoList(orderRepository.findAllByUser_EmailOrderByCreatedAtDesc(email)
                 .orElseThrow(() -> new NotFoundException("User orders not found")));
     }
 

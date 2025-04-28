@@ -19,6 +19,8 @@ import ru.degree.shop.repository.UserRepository;
 import ru.degree.shop.service.CartService;
 
 import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
 
 @Service

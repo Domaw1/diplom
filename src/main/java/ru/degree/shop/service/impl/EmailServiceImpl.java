@@ -59,7 +59,7 @@ public class EmailServiceImpl implements EmailService {
     public void sendReceiptEmail(ReceiptPostDto receiptPostDto) {
         OrderGetDto order = orderService.getUserOrder(receiptPostDto.getOrderId());
 
-        User user = userRepository.findById(order.getUser())
+        User user = userRepository.findUserByEmail(order.getUser())
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
         String imagePath = saveReceiptImage(receiptPostDto.getReceiptImage());

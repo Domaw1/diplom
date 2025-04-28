@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 public class OrderGetDto {
     private Long id;
-    private Long user;
+    private String user;
     private BigDecimal total;
     private OrderStatus orderStatus;
     private OffsetDateTime createdAt;

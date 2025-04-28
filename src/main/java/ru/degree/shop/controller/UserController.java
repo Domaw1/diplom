@@ -2,6 +2,7 @@ package ru.degree.shop.controller;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,7 +17,7 @@ import java.security.Principal;
 
 @RestController
 @RequestMapping("api/v1/user")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;

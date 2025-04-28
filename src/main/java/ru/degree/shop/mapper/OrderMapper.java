@@ -18,7 +18,7 @@ public interface OrderMapper {
     List<OrderGetDto> ordersToOrderGetDtoList(List<Order> orders);
 
     @Named("mapUser")
-    default Long mapUser(User user) {
-        return user.getId();
+    default String mapUser(User user) {
+        return user.getEmail();
     }
 }

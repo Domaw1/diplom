@@ -1,6 +1,6 @@
 package ru.degree.shop.controller;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,7 +12,7 @@ import ru.degree.shop.service.EmailService;
 
 @RestController
 @RequestMapping("api/v1/email")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class EmailSenderController {
     private final EmailService emailService;
 
