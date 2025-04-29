@@ -1,12 +1,8 @@
 package ru.degree.shop.service.impl;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import ru.degree.shop.DTO.token.JwtAuthenticationDto;
 import ru.degree.shop.DTO.token.RefreshTokenDto;
@@ -22,11 +18,11 @@ import ru.degree.shop.security.jwt.JwtService;
 import ru.degree.shop.service.UserService;
 
 import javax.naming.AuthenticationException;
-import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
@@ -42,7 +38,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @SneakyThrows
     public JwtAuthenticationDto refreshToken(RefreshTokenDto refreshTokenDto) {
-        throw new UnsupportedOperationException("Refresh tokens not implemented yet");
+        throw new UnsupportedOperationException("Refresh tokens");
     }
 
     @Override
@@ -62,6 +58,32 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole(Role.USER);
         User savedUser = userRepository.save(user);
+        return userMapper.toDto(savedUser);
+    }
+
+    @Override
+    public UserDto updateUser(String oldEmail, UserDto userDto) {
+        User userToUpdate = userRepository.findUserByEmail(oldEmail)
+                .orElseThrow(() -> new NotFoundException("User not found!"));
+
+        if(!passwordEncoder.matches(userDto.getCurrentPassword(), userToUpdate.getPassword())) {
+            throw new RuntimeException("Неверный пароль!");
+        }
+
+        if (!userToUpdate.getEmail().equals(userDto.getEmail())) {
+            userToUpdate.setEmail(userDto.getEmail());
+        }
+
+        if (!Objects.equals(userDto.getPassword(), "") && !passwordEncoder.matches(userDto.getPassword(), userToUpdate.getPassword())) {
+            userToUpdate.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        }
+
+        if(!userToUpdate.getUsername().equals(userDto.getUsername())) {
+            userToUpdate.setUsername(userDto.getUsername());
+        }
+
+        userToUpdate.setRole(Role.USER);
+        User savedUser = userRepository.save(userToUpdate);
         return userMapper.toDto(savedUser);
     }
 

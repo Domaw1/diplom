@@ -1,8 +1,9 @@
 package ru.degree.shop.service.impl;
 
 import jakarta.mail.internet.MimeMessage;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.aspectj.weaver.ast.Not;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -12,7 +13,9 @@ import org.thymeleaf.context.Context;
 import ru.degree.shop.DTO.order.OrderGetDto;
 import ru.degree.shop.DTO.token.ReceiptPostDto;
 import ru.degree.shop.exception.NotFoundException;
+import ru.degree.shop.model.Order;
 import ru.degree.shop.model.User;
+import ru.degree.shop.repository.OrderRepository;
 import ru.degree.shop.repository.UserRepository;
 import ru.degree.shop.service.EmailService;
 import ru.degree.shop.service.OrderService;
@@ -26,11 +29,11 @@ import java.util.Locale;
 import java.util.UUID;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class EmailServiceImpl implements EmailService {
     private final JavaMailSender mailSender;
     private final TemplateEngine templateEngine;
-    private final OrderService orderService;
+    private final OrderRepository orderRepository;
     private final UserRepository userRepository;
 
     @Override
@@ -57,15 +60,16 @@ public class EmailServiceImpl implements EmailService {
     @Override
     @SneakyThrows
     public void sendReceiptEmail(ReceiptPostDto receiptPostDto) {
-        OrderGetDto order = orderService.getUserOrder(receiptPostDto.getOrderId());
+        Order order = orderRepository.findById(receiptPostDto.getOrderId())
+                .orElseThrow(() -> new NotFoundException("Order not found"));
 
-        User user = userRepository.findUserByEmail(order.getUser())
-                .orElseThrow(() -> new NotFoundException("User not found"));
+//        User user = userRepository.findUserByEmail(order.getUser().getEmail())
+//                .orElseThrow(() -> new NotFoundException("User not found"));
 
         String imagePath = saveReceiptImage(receiptPostDto.getReceiptImage());
 
         this.makeReceiptEmail(
-                user.getEmail(),
+                order.getUser().getEmail(),
                 order.getId().toString(),
                 imagePath);
 

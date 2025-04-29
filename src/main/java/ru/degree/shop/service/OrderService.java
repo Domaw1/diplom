@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface OrderService {
     List<OrderGetDto> getUserOrders(String email);
-    OrderGetDto getUserOrder(Long orderId);
+    OrderGetDto getUserOrderById(Long orderId);
     OrderGetDto makeOrder(String email);
 }

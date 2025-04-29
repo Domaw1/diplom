@@ -25,8 +25,8 @@ import java.util.List;
 
     @GetMapping("/user/{id}")
     @PostAuthorize("returnObject.body.user == authentication.name")
-    public ResponseEntity<OrderGetDto> getUserOrder(@PathVariable Long id) {
-        return new ResponseEntity<>(orderService.getUserOrder(id), HttpStatus.OK);
+    public ResponseEntity<OrderGetDto> getUserOrderByOrderId(@PathVariable Long id) {
+        return new ResponseEntity<>(orderService.getUserOrderById(id), HttpStatus.OK);
     }
 
     @PostMapping

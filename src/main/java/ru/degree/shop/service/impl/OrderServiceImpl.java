@@ -34,7 +34,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderGetDto getUserOrder(Long orderId) {
+    public OrderGetDto getUserOrderById(Long orderId) {
         return orderMapper.orderToOrderGetDto(orderRepository.findById(orderId)
                 .orElseThrow(() -> new NotFoundException("User order not found")));
     }

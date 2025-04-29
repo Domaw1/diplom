@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import ru.degree.shop.DTO.token.JwtAuthenticationDto;
 import ru.degree.shop.DTO.token.RefreshTokenDto;
@@ -42,5 +43,10 @@ public class UserController {
     @PostMapping
     public ResponseEntity<UserDto> registerUser(@RequestBody @Valid UserDto user) {
         return new ResponseEntity<>(userService.registerUser(user), HttpStatus.CREATED);
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<UserDto> updateUser(@RequestBody @Valid UserDto user, Authentication authentication) {
+        return new ResponseEntity<>(userService.updateUser(authentication.getName(), user), HttpStatus.OK);
     }
 }

@@ -16,7 +16,7 @@ import ru.degree.shop.service.EmailService;
 public class EmailSenderController {
     private final EmailService emailService;
 
-    @PostMapping("/send-receipt")
+    @PostMapping("/send")
     public ResponseEntity<String> sendEmail(@RequestBody ReceiptPostDto receiptPostDto) {
         emailService.sendReceiptEmail(receiptPostDto);
         return new ResponseEntity<>("Отправлено!", HttpStatus.OK);

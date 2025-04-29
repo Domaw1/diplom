@@ -10,4 +10,5 @@ public interface UserService {
     JwtAuthenticationDto refreshToken(RefreshTokenDto refreshTokenDto);
     UserDto getUserByEmail(String email);
     UserDto registerUser(UserDto userDto);
+    UserDto updateUser(String oldEmail, UserDto userDto);
 }
