@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import ru.degree.shop.DTO.product.ProductCreateDto;
 import ru.degree.shop.DTO.product.ProductGetDto;
 import ru.degree.shop.service.ProductService;
 
@@ -45,7 +46,7 @@ public class ProductController {
 
     @PostMapping("/create")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<ProductGetDto> createProduct(@RequestBody ProductGetDto product) {
+    public ResponseEntity<ProductGetDto> createProduct(@RequestBody ProductCreateDto product) {
 
         return new ResponseEntity<>(productService.createProduct(product), HttpStatus.CREATED);
     }

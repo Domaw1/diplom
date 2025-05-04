@@ -1,5 +1,6 @@
 package ru.degree.shop.service;
 
+import ru.degree.shop.DTO.product.ProductCreateDto;
 import ru.degree.shop.DTO.product.ProductGetDto;
 
 import java.math.BigDecimal;
@@ -15,5 +16,5 @@ public interface ProductService {
 
     String deleteProductById(Long id);
 
-    ProductGetDto createProduct(ProductGetDto product);
+    ProductGetDto createProduct(ProductCreateDto product);
 }

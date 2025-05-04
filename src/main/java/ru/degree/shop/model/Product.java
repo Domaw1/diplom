@@ -42,7 +42,7 @@ public class Product {
     @JoinColumn(nullable = false)
     private SubCategory subCategory;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductVariant> productVariants;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)

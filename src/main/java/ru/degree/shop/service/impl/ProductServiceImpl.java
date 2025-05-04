@@ -5,15 +5,13 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import ru.degree.shop.DTO.product.ProductCreateDto;
 import ru.degree.shop.DTO.product.ProductGetDto;
 import ru.degree.shop.exception.NotFoundException;
 import ru.degree.shop.mapper.ProductMapper;
-import ru.degree.shop.model.Brand;
-import ru.degree.shop.model.Product;
-import ru.degree.shop.model.SubCategory;
-import ru.degree.shop.repository.BrandRepository;
-import ru.degree.shop.repository.ProductRepository;
-import ru.degree.shop.repository.SubCategoryRepository;
+import ru.degree.shop.mapper.ProductVariantMapper;
+import ru.degree.shop.model.*;
+import ru.degree.shop.repository.*;
 import ru.degree.shop.service.ProductService;
 import ru.degree.shop.specification.ProductSpecification;
 
@@ -27,6 +25,10 @@ public class ProductServiceImpl implements ProductService {
     private final ProductMapper productMapper;
     private final BrandRepository brandRepository;
     private final SubCategoryRepository subCategoryRepository;
+    private final ProductVariantRepository productVariantRepository;
+    private final ProductVariantMapper productVariantMapper;
+    private final ColorRepository colorRepository;
+    private final SizeRepository sizeRepository;
 
     @Override
     public List<ProductGetDto> getAllProducts() {
@@ -64,7 +66,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ProductGetDto createProduct(ProductGetDto product) {
+    public ProductGetDto createProduct(ProductCreateDto product) {
         Brand brand = brandRepository.findByName(product.getBrand())
                 .orElseThrow(() -> new NotFoundException("Brand not found"));
 
@@ -80,6 +82,24 @@ public class ProductServiceImpl implements ProductService {
         newProduct.setSubCategory(subCategory);
         newProduct.setImageUrls(product.getImageUrls());
         Product savedProduct = productRepository.save(newProduct);
+
+        if(product.getProductVariants() != null && !product.getProductVariants().isEmpty()) {
+            var variants = product.getProductVariants().stream()
+                    .map(variantDto -> {
+                        var variant = productVariantMapper.productVariantDtoToProductVariant(variantDto);
+                        variant.setProduct(savedProduct);
+                        ProductColor color = colorRepository.findByColor(variantDto.getColor())
+                                .orElseThrow(() -> new NotFoundException("Color not found: " + variantDto.getColor()));
+                        variant.setColor(color);
+
+                        Size size = sizeRepository.findBySize(variantDto.getSize())
+                                .orElseThrow(() -> new NotFoundException("Size not found: " + variantDto.getSize()));
+                        variant.setSize(size);
+                        return variant;
+                    }).toList();
+            productVariantRepository.saveAll(variants);
+            savedProduct.setProductVariants(variants);
+        }
         return productMapper.productToProductGetDto(savedProduct);
     }
 }
