@@ -16,7 +16,9 @@ import ru.degree.shop.service.ProductService;
 import ru.degree.shop.specification.ProductSpecification;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -44,8 +46,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductGetDto> filteredProducts
-            (List<String> brand, List<String> color, List<String> size, String subCategory, BigDecimal minPrice, BigDecimal maxPrice, String sortBy, String sortDirection) {
-        Specification<Product> specification = ProductSpecification.filterProduct(brand, color, size,subCategory, minPrice, maxPrice);
+            (List<String> brand, List<String> color, List<String> size, String subCategory, BigDecimal minPrice,
+             BigDecimal maxPrice, String sortBy, String sortDirection) {
+        Specification<Product> specification = ProductSpecification
+                .filterProduct(brand, color, size,subCategory, minPrice, maxPrice);
 
         Sort sort = Sort.unsorted();
 
@@ -102,4 +106,53 @@ public class ProductServiceImpl implements ProductService {
         }
         return productMapper.productToProductGetDto(savedProduct);
     }
+
+    @Override
+    @Transactional
+    public ProductGetDto updateProduct(ProductCreateDto productDto) {
+        Product product = productRepository.findById(productDto.getId())
+                .orElseThrow(() -> new NotFoundException("Product not found"));
+
+        Brand brand = brandRepository.findByName(productDto.getBrand())
+                .orElseThrow(() -> new NotFoundException("Brand not found"));
+
+        SubCategory subCategory = subCategoryRepository.findByName(productDto.getSubCategory())
+                .orElseThrow(() -> new NotFoundException("SubCategory not found"));
+
+        product.setName(productDto.getName());
+        product.setPrice(productDto.getPrice());
+        product.setDescription(productDto.getDescription());
+        product.setGender(productDto.getGender());
+        product.setBrand(brand);
+        product.setSubCategory(subCategory);
+        product.setImageUrls(productDto.getImageUrls());
+
+        if (productDto.getProductVariants() != null && !productDto.getProductVariants().isEmpty()) {
+            var variants = productDto.getProductVariants().stream()
+                    .map(variantDto -> {
+                        var variant = productVariantMapper.productVariantDtoToProductVariant(variantDto);
+                        variant.setProduct(product);
+
+                        ProductColor color = colorRepository.findByColor(variantDto.getColor())
+                                .orElseThrow(() -> new NotFoundException("Color not found: " + variantDto.getColor()));
+                        variant.setColor(color);
+
+                        Size size = sizeRepository.findBySize(variantDto.getSize())
+                                .orElseThrow(() -> new NotFoundException("Size not found: " + variantDto.getSize()));
+                        variant.setSize(size);
+                        return variant;
+                    }).toList();
+
+            if (product.getProductVariants() == null) {
+                product.setProductVariants(new ArrayList<>());
+            } else {
+                product.getProductVariants().clear();
+            }
+            product.getProductVariants().addAll(variants);
+        }
+
+        Product updated = productRepository.save(product);
+        return productMapper.productToProductGetDto(updated);
+    }
+
 }

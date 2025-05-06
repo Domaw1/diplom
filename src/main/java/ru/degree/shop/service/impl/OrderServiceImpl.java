@@ -1,11 +1,11 @@
 package ru.degree.shop.service.impl;
 
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.degree.shop.DTO.order.OrderGetDto;
+import ru.degree.shop.DTO.order.OrderStatusUpdateDto;
 import ru.degree.shop.exception.EmptyCartException;
 import ru.degree.shop.exception.NotFoundException;
 import ru.degree.shop.mapper.OrderMapper;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final CartRepository cartRepository;
@@ -31,6 +31,11 @@ public class OrderServiceImpl implements OrderService {
     public List<OrderGetDto> getUserOrders(String email) {
         return orderMapper.ordersToOrderGetDtoList(orderRepository.findAllByUser_EmailOrderByCreatedAtDesc(email)
                 .orElseThrow(() -> new NotFoundException("User orders not found")));
+    }
+
+    @Override
+    public List<OrderGetDto> getAllOrders() {
+        return orderMapper.ordersToOrderGetDtoList(orderRepository.findAll(Sort.by(Sort.Direction.ASC, "id")));
     }
 
     @Override
@@ -77,6 +82,16 @@ public class OrderServiceImpl implements OrderService {
         cartRepository.save(cart);
 
         cartItemRepository.deleteAll(itemsToDelete);
+        return orderMapper.orderToOrderGetDto(order);
+    }
+
+    @Override
+    public OrderGetDto changeOrderStatus(OrderStatusUpdateDto orderStatusDto) {
+        Order order = orderRepository.findById(orderStatusDto.getOrderId())
+                .orElseThrow(() -> new NotFoundException("Order not found"));
+
+        order.setOrderStatus(OrderStatus.valueOf(orderStatusDto.getOrderStatus()));
+        orderRepository.save(order);
         return orderMapper.orderToOrderGetDto(order);
     }
 }

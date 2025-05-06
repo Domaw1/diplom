@@ -4,9 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import ru.degree.shop.DTO.order.OrderGetDto;
+import ru.degree.shop.DTO.order.OrderStatusUpdateDto;
 import ru.degree.shop.service.OrderService;
 
 import java.util.List;
@@ -14,7 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/order")
 @RequiredArgsConstructor
-    public class OrderController {
+public class OrderController {
     private final OrderService orderService;
 
     @GetMapping("/user")
@@ -33,5 +35,17 @@ import java.util.List;
     public ResponseEntity<OrderGetDto> createOrder(Authentication authentication) {
         String email = authentication.getName();
         return new ResponseEntity<>(orderService.makeOrder(email), HttpStatus.CREATED);
+    }
+
+    @PutMapping("/update")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<OrderGetDto> updateOrder(@RequestBody OrderStatusUpdateDto orderStatusUpdateDto) {
+        return new ResponseEntity<>(orderService.changeOrderStatus(orderStatusUpdateDto), HttpStatus.OK);
+    }
+
+    @GetMapping("/all")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<List<OrderGetDto>> getAllOrders() {
+        return new ResponseEntity<>(orderService.getAllOrders(), HttpStatus.OK);
     }
 }
