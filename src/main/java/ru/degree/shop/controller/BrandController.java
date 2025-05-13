@@ -3,9 +3,8 @@ package ru.degree.shop.controller;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 import ru.degree.shop.DTO.categories.BrandGetDto;
 import ru.degree.shop.service.BrandService;
 
@@ -20,5 +19,17 @@ public class BrandController {
     @GetMapping
     public ResponseEntity<List<BrandGetDto>> getAllBrands() {
         return new ResponseEntity<>(brandService.getAllBrands(), HttpStatus.OK);
+    }
+
+    @PostMapping("/add")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<BrandGetDto> addBrand(@RequestBody BrandGetDto brand) {
+        return new ResponseEntity<>(brandService.createBrand(brand), HttpStatus.OK);
+    }
+
+    @PutMapping("/update")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<BrandGetDto> updateBrand(@RequestBody BrandGetDto brand) {
+        return new ResponseEntity<>(brandService.updateBrand(brand), HttpStatus.OK);
     }
 }

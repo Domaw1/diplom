@@ -2,9 +2,12 @@ package ru.degree.shop.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "product_color")
 public class ProductColor {

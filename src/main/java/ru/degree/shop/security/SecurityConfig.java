@@ -79,12 +79,13 @@ public class SecurityConfig {
                                 .authenticated()
                                 .requestMatchers("/api/v1/products/create", "/api/v1/products/delete/{id}",
                                         "/api/v1/products/update", "/api/v1/order/update",
-                                        "/api/v1/order/all"
+                                        "/api/v1/order/all", "/api/v1/brand/update", "/api/v1/brand/add"
                                         )
                                 .hasAnyRole("ADMIN")
                 )
                 .exceptionHandling(exceptions ->
-                        exceptions.authenticationEntryPoint((request, response, exception) -> {
+                        exceptions.authenticationEntryPoint(
+                                (request, response, exception) -> {
                                     response.setStatus(HttpStatus.UNAUTHORIZED.value());
                                     response.setContentType("application/json");
                                     response.getWriter().write("""
@@ -100,7 +101,8 @@ public class SecurityConfig {
                 .oauth2ResourceServer(oauth2ResourceServer ->
                         oauth2ResourceServer.jwt(jwtConfigurer ->
                                 jwtConfigurer.jwtAuthenticationConverter(jwtAuthenticationConverter())))
-                .oauth2Login(oauth -> oauth.successHandler(oAuth2AuthorizationSuccessHandler(jwtService, userRepository)));
+                .oauth2Login(oauth ->
+                        oauth.successHandler(oAuth2AuthorizationSuccessHandler(jwtService, userRepository)));
         return http.build();
     }
 
@@ -124,7 +126,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationSuccessHandler oAuth2AuthorizationSuccessHandler(JwtService jwtService, UserRepository userRepository) {
+    public AuthenticationSuccessHandler oAuth2AuthorizationSuccessHandler
+            (JwtService jwtService, UserRepository userRepository) {
         return (request, response, authentication) -> {
             OAuth2User oAuth2User = ((OAuth2AuthenticationToken) authentication).getPrincipal();
             String email = oAuth2User.getAttribute("email");
