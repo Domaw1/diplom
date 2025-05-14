@@ -42,7 +42,7 @@ public class Product {
     @JoinColumn(nullable = false)
     private Brand brand;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY )
     @JoinColumn(nullable = false)
     private SubCategory subCategory;
 

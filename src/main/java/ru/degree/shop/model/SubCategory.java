@@ -21,6 +21,6 @@ public class SubCategory {
     @ManyToOne(fetch = FetchType.LAZY)
     private Category category;
 
-    @OneToMany(mappedBy = "subCategory")
+    @OneToMany(mappedBy = "subCategory", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Product> products;
 }

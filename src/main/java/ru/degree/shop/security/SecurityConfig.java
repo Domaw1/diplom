@@ -79,7 +79,9 @@ public class SecurityConfig {
                                 .authenticated()
                                 .requestMatchers("/api/v1/products/create", "/api/v1/products/delete/{id}",
                                         "/api/v1/products/update", "/api/v1/order/update",
-                                        "/api/v1/order/all", "/api/v1/brand/update", "/api/v1/brand/add"
+                                        "/api/v1/order/all", "/api/v1/brand/update", "/api/v1/brand/add",
+                                        "/api/v1/brand/delete", "/api/v1/category/delete",
+                                        "/api/v1/category/add", "/api/v1/category/update"
                                         )
                                 .hasAnyRole("ADMIN")
                 )

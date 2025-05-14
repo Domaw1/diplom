@@ -1,5 +1,6 @@
 package ru.degree.shop.service.impl;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.degree.shop.DTO.categories.BrandGetDto;
@@ -33,12 +34,21 @@ public class BrandServiceImpl implements BrandService {
 
     @Override
     public BrandGetDto updateBrand(BrandGetDto brand) {
-        Brand brandToUpdate = brandRepository.findByName(brand.getName())
+        Brand brandToUpdate = brandRepository.findById(brand.getId())
                 .orElseThrow(() -> new NotFoundException("Бренд не найден"));
         brandToUpdate.setName(brand.getName());
         brandToUpdate.setLogoUrl(brand.getLogoUrl());
         Brand savedBrand = brandRepository.save(brandToUpdate);
         return brandMapper.toBrandGetDto(savedBrand);
+    }
+
+    @Override
+    @Transactional
+    public String deleteBrand(BrandGetDto brand) {
+        Brand brandToDelete = brandRepository.findByName(brand.getName())
+                .orElseThrow(() -> new NotFoundException("Бренд не найден"));
+        brandRepository.delete(brandToDelete);
+        return "Успешно удалено";
     }
 
 }

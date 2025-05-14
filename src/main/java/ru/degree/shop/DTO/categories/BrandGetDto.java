@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class BrandGetDto {
+    private Long id;
     private String name;
     private String logoUrl;
 }

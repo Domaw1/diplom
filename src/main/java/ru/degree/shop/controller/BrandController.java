@@ -32,4 +32,10 @@ public class BrandController {
     public ResponseEntity<BrandGetDto> updateBrand(@RequestBody BrandGetDto brand) {
         return new ResponseEntity<>(brandService.updateBrand(brand), HttpStatus.OK);
     }
+
+    @DeleteMapping("/delete")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<String> deleteBrand(@RequestBody BrandGetDto brand) {
+        return new ResponseEntity<>(brandService.deleteBrand(brand), HttpStatus.OK);
+    }
 }
