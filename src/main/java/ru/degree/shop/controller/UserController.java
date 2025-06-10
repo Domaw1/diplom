@@ -10,6 +10,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import ru.degree.shop.DTO.token.JwtAuthenticationDto;
 import ru.degree.shop.DTO.token.RefreshTokenDto;
+import ru.degree.shop.DTO.user.ResetPasswordDto;
+import ru.degree.shop.DTO.user.ResetPasswordRequestDto;
 import ru.degree.shop.DTO.user.UserAuthPostDto;
 import ru.degree.shop.DTO.user.UserDto;
 import ru.degree.shop.service.UserService;
@@ -48,5 +50,17 @@ public class UserController {
     @PutMapping("/update")
     public ResponseEntity<UserDto> updateUser(@RequestBody @Valid UserDto user, Authentication authentication) {
         return new ResponseEntity<>(userService.updateUser(authentication.getName(), user), HttpStatus.OK);
+    }
+
+    @PostMapping("/reset-password-request")
+    public ResponseEntity<Void> resetPasswordRequest(@RequestBody ResetPasswordRequestDto dto) {
+        userService.sendResetPasswordEmail(dto.getEmail());
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<Void> resetPassword(@RequestBody ResetPasswordDto dto) {
+        userService.resetPassword(dto.getToken(), dto.getNewPassword());
+        return ResponseEntity.ok().build();
     }
 }

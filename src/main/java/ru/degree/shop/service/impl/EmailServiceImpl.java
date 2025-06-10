@@ -72,6 +72,24 @@ public class EmailServiceImpl implements EmailService {
         Files.deleteIfExists(Paths.get(imagePath));
     }
 
+    @Override
+    @SneakyThrows
+    public void sendResetPasswordEmail(String toEmail, String resetLink) {
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+
+        Context context = new Context(Locale.getDefault());
+        context.setVariable("resetLink", resetLink);
+
+        String html = templateEngine.process("reset-password-email", context);
+
+        helper.setTo(toEmail);
+        helper.setSubject("Восстановление пароля");
+        helper.setText(html, true);
+
+        mailSender.send(mimeMessage);
+    }
+
     @SneakyThrows
     private String saveReceiptImage(String base64Image) {
         String[] parts = base64Image.split(",");

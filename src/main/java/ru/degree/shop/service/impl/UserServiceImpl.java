@@ -15,6 +15,7 @@ import ru.degree.shop.model.Role;
 import ru.degree.shop.model.User;
 import ru.degree.shop.repository.UserRepository;
 import ru.degree.shop.security.jwt.JwtService;
+import ru.degree.shop.service.EmailService;
 import ru.degree.shop.service.UserService;
 
 import javax.naming.AuthenticationException;
@@ -28,6 +29,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final EmailService emailService;
 
     @Override
     public JwtAuthenticationDto signIn(UserAuthPostDto userAuthPostDto) {
@@ -38,7 +40,20 @@ public class UserServiceImpl implements UserService {
     @Override
     @SneakyThrows
     public JwtAuthenticationDto refreshToken(RefreshTokenDto refreshTokenDto) {
-        throw new UnsupportedOperationException("Refresh tokens");
+        String refreshToken = refreshTokenDto.getRefreshToken();
+
+        var jwt = jwtService.decodeToken(refreshToken);
+        var email = jwt.getSubject();
+        var tokenType = jwt.getClaimAsString("tokenType");
+
+        if (!"refresh".equals(tokenType)) {
+            throw new AuthenticationException("Недопустимый refresh токен");
+        }
+
+        User user = userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
+
+        return jwtService.generateTokens(user);
     }
 
     @Override
@@ -85,6 +100,34 @@ public class UserServiceImpl implements UserService {
         userToUpdate.setRole(Role.USER);
         User savedUser = userRepository.save(userToUpdate);
         return userMapper.toDto(savedUser);
+    }
+
+    @Override
+    public void sendResetPasswordEmail(String email) {
+        User user = userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
+
+        String token = jwtService.generateResetPasswordToken(user);
+        String resetLink = "http://localhost:8081/reset-password?token=" + token;
+
+        emailService.sendResetPasswordEmail(email, resetLink);
+    }
+
+    @Override
+    public void resetPassword(String token, String newPassword) {
+        var jwt = jwtService.decodeToken(token);
+
+        if (!"reset".equals(jwt.getClaimAsString("tokenType"))) {
+            throw new RuntimeException("Недопустимый токен для сброса пароля");
+        }
+
+        String email = jwt.getSubject();
+
+        User user = userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
     }
 
     @SneakyThrows

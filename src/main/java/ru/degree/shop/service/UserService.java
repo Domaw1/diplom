@@ -11,4 +11,6 @@ public interface UserService {
     UserDto getUserByEmail(String email);
     UserDto registerUser(UserDto userDto);
     UserDto updateUser(String oldEmail, UserDto userDto);
+    void sendResetPasswordEmail(String email);
+    void resetPassword(String token, String newPassword);
 }

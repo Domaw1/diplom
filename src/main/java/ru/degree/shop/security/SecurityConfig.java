@@ -63,7 +63,8 @@ public class SecurityConfig {
                                         "/api/v1/brand", "/api/v1/reviews/{id}",
                                         "/api/v1/variant", "/api/v1/variant/{id}",
                                         "/.well-known/**", "/login/oauth2/code/google",
-                                        "/oauth2/**", "/login/oauth2/**")
+                                        "/oauth2/**", "/login/oauth2/**",
+                                        "/api/v1/user/reset-password", "/api/v1/user/reset-password-request")
                                 .permitAll()
                                 .requestMatchers(
                                         HttpMethod.POST,"/api/v1/user"
