@@ -8,4 +8,5 @@ import java.util.List;
 public interface ReviewService {
     List<ReviewGetDto> getReviewsByProductId(Long productId);
     ReviewGetDto addReview(ReviewPostDto reviewGetDto, String email);
+    Boolean hasUserPurchased(Long productId, String email);
 }

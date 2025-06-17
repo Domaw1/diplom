@@ -41,6 +41,7 @@ public class JwtService {
                 .issuedAt(issuedAt)
                 .expiresAt(expiration)
                 .claim("userId", user.getId())
+                .claim("username", user.getUsername())
                 .claim("role","ROLE_"+ user.getRole().name())
                 .build();
 
@@ -66,7 +67,7 @@ public class JwtService {
 
     public String generateResetPasswordToken(User user) {
         Instant now = Instant.now();
-        Instant expiration = now.plusSeconds(15 * 60); // 15 минут
+        Instant expiration = now.plusSeconds(15 * 60); 
 
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .subject(user.getEmail())

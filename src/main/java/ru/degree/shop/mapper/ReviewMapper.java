@@ -21,7 +21,7 @@ public interface ReviewMapper {
 
     @Named("mapUser")
     default String mapUser(User user) {
-        return user.getUsername();
+        return user.getUsername() + ": " + user.getEmail();
     }
 
     @Named("mapProduct")

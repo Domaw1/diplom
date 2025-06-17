@@ -6,13 +6,10 @@ import org.springframework.stereotype.Service;
 import ru.degree.shop.DTO.review.ReviewGetDto;
 import ru.degree.shop.DTO.review.ReviewPostDto;
 import ru.degree.shop.exception.NotFoundException;
+import ru.degree.shop.mapper.ProductMapper;
 import ru.degree.shop.mapper.ReviewMapper;
-import ru.degree.shop.model.Product;
-import ru.degree.shop.model.Review;
-import ru.degree.shop.model.User;
-import ru.degree.shop.repository.ProductRepository;
-import ru.degree.shop.repository.ReviewRepository;
-import ru.degree.shop.repository.UserRepository;
+import ru.degree.shop.model.*;
+import ru.degree.shop.repository.*;
 import ru.degree.shop.service.ReviewService;
 
 import java.util.List;
@@ -23,7 +20,9 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
+    private final ProductVariantRepository productVariantRepository;
     private final ReviewMapper reviewMapper;
+    private final OrderRepository orderRepository;
 
     @Override
     public List<ReviewGetDto> getReviewsByProductId(Long productId) {
@@ -48,5 +47,15 @@ public class ReviewServiceImpl implements ReviewService {
         Review savedReview = reviewRepository.save(review);
 
         return reviewMapper.toReviewGetDto(savedReview);
+    }
+
+    @Override
+    public Boolean hasUserPurchased(Long productId, String email) {
+        User user = userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new NotFoundException("User not found"));
+
+        boolean hasPurchased = orderRepository.existsByUserAndProductId(user, productId);
+
+        return orderRepository.existsByUserAndProductId(user, productId);
     }
 }

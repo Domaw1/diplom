@@ -75,7 +75,8 @@ public class SecurityConfig {
                                         "/api/v1/reviews", "/api/v1/order","/api/v1/order/user",
                                         "/api/v1/cart/user", "/api/v1/wishlist/user", "/api/v1/wishlist",
                                         "/api/v1/cart/clear", "/api/v1/cart/post", "/api/v1/cart",
-                                        "/api/v1/order/user/{id}", "/api/v1/email/send", "/api/v1/user/update"
+                                        "/api/v1/order/user/{id}", "/api/v1/email/send", "/api/v1/user/update",
+                                        "/api/v1/reviews/hasUserPurchased/{productId}"
                                 )
                                 .authenticated()
                                 .requestMatchers("/api/v1/products/create", "/api/v1/products/delete/{id}",

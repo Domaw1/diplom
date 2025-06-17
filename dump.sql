@@ -923,6 +923,8 @@ COPY public.brand (id, logo_url, name) FROM stdin;
 3	https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Under_armour_logo.svg/1280px-Under_armour_logo.svg.png	Under Armour
 4	https://i1.sndcdn.com/artworks-000123540159-jnxs7u-t500x500.jpg	Asics
 5	https://www.longboarderlabs.com/wp-content/uploads/2019/03/thrasher-classic-flames-500x500.jpg	Trasher
+6	https://www.longboarderlabs.com/wp-content/uploads/2019/03/thrasher-classic-flames-500x500.jpg	Trasher2
+12	https://www.longboarderlabs.com/wp-content/uploads/2019/03/thrasher-classic-flames-500x500.jpg	qqqq
 \.
 
 
@@ -937,6 +939,7 @@ COPY public.cart (id, user_id) FROM stdin;
 9	8
 10	12
 11	2
+12	10
 \.
 
 
@@ -945,12 +948,8 @@ COPY public.cart (id, user_id) FROM stdin;
 --
 
 COPY public.cart_item (quantity, cart_id, id, product_variant_id) FROM stdin;
-2	6	11	5
-1	6	12	8
 1	7	13	1
-1	10	29	8
 1	8	32	16
-1	6	34	1
 \.
 
 
@@ -984,6 +983,16 @@ COPY public.order_item (quantity, id, order_id, product_variant_id) FROM stdin;
 1	14	9	3
 1	15	9	11
 1	16	10	5
+2	17	11	5
+1	18	11	8
+1	19	11	1
+1	20	12	16
+1	21	13	8
+1	22	13	7
+1	23	14	18
+1	24	15	9
+1	25	15	4
+1	26	16	4
 \.
 
 
@@ -992,8 +1001,6 @@ COPY public.order_item (quantity, id, order_id, product_variant_id) FROM stdin;
 --
 
 COPY public.orders (created_at, id, user_id, order_status) FROM stdin;
-2025-04-05 12:01:39.757742+00	1	1	NEW
-2025-04-05 12:56:08.217437+00	2	3	NEW
 2025-04-06 08:02:21.894857+00	3	6	NEW
 2025-04-06 08:05:31.810071+00	4	6	NEW
 2025-04-06 08:20:36.834283+00	5	8	NEW
@@ -1002,6 +1009,14 @@ COPY public.orders (created_at, id, user_id, order_status) FROM stdin;
 2025-04-06 09:48:53.642139+00	8	12	NEW
 2025-04-06 10:26:52.783017+00	9	6	NEW
 2025-04-09 14:56:12.111001+00	10	2	NEW
+2025-04-28 11:58:24.158813+00	11	1	NEW
+2025-04-29 11:22:19.216603+00	12	2	NEW
+2025-04-29 11:39:51.784629+00	13	12	NEW
+2025-04-05 12:01:39.757742+00	1	1	DELIVERED
+2025-04-05 12:56:08.217437+00	2	3	CANCELED
+2025-05-15 03:22:02.411522+00	14	2	NEW
+2025-05-15 04:08:21.526888+00	15	10	NEW
+2025-05-15 04:10:44.980152+00	16	2	DELIVERED
 \.
 
 
@@ -1010,6 +1025,8 @@ COPY public.orders (created_at, id, user_id, order_status) FROM stdin;
 --
 
 COPY public.product (price, brand_id, id, sub_category_id, description, gender, name) FROM stdin;
+8000.00	1	23	1	Adidas X JFA ladies tees	MALE	Adidas tee
+5000.00	1	22	1	Miami Heat LeBron James Adidas t-shirt size S	MALE	Adidas t-shirt LEBRO
 2999.00	1	1	1	Классическая хлопковая футболка	Мужской	T-Shirt Classic
 8999.00	2	2	2	Стройные джинсы с эффектом потертости	Женский	Slim Fit Jeans
 12999.00	3	3	3	Ветрозащитная спортивная куртка	Унисекс	Storm Jacket
@@ -1073,6 +1090,10 @@ COPY public.product_image_urls (product_id, image_urls) FROM stdin;
 12	https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/4fd2d306-2404-4f6f-9b76-38d7fcc7234e/M+NK+DF+PACER+TOP+HZ.png
 14	https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyPf5aZtZcVUnxp-pu3JVa7bzqvaDQYHs3qQ&s
 15	https://brandedskateshop.com/cdn/shop/products/airbrush_tshirt_black_1024_nick2.jpg?v=1658419282&width=990
+23	https://media-assets.grailed.com/prd/listing/23586798/16eda2a24c2c447d8bf42f2c0db67e51?w=1000
+23	https://media-assets.grailed.com/prd/listing/23586798/cf09e8e5fa6e4cb98c11e9be79224068?w=1000
+22	https://media-assets.grailed.com/prd/listing/temp/e181431b7bba4fd792628963a560d756?w=2200
+22	https://media-assets.grailed.com/prd/listing/temp/07a1dc043b6a419aba378794f5ccdcb1?w=2200
 \.
 
 
@@ -1081,22 +1102,25 @@ COPY public.product_image_urls (product_id, image_urls) FROM stdin;
 --
 
 COPY public.product_variant (quantity, color_id, id, product_id, size_id) FROM stdin;
-25	2	4	4	2
-35	5	9	9	3
-50	4	1	1	3
-40	7	8	8	2
-20	4	16	1	2
 7	4	6	6	7
-11	4	7	7	5
-4	1	14	14	7
 99	4	12	12	6
-6	2	13	13	7
 29	4	2	2	4
 17	2	10	10	1
 14	3	15	15	3
 14	2	3	3	5
 20	3	11	11	2
-8	4	5	5	3
+6	4	5	5	3
+49	4	1	1	3
+19	4	16	1	2
+38	7	8	8	2
+10	4	7	7	5
+10	4	26	22	2
+5	4	27	22	4
+19	5	18	23	2
+6	4	13	13	7
+23	4	4	4	2
+4	4	14	14	7
+34	4	9	9	3
 \.
 
 
@@ -1113,6 +1137,7 @@ COPY public.review (rating, created_at, id, product_id, user_id, comment) FROM s
 4	2025-04-06 08:18:05.020129+00	6	1	9	В целом, неплохо
 5	2025-04-06 10:20:10.005565+00	7	9	6	Отличная футболка, качество!
 5	2025-04-06 10:20:30.855457+00	8	9	7	Мне очень понравилась!
+5	2025-05-15 04:07:29.564603+00	9	9	10	sss
 \.
 
 
@@ -1136,7 +1161,6 @@ COPY public.size (id, size) FROM stdin;
 --
 
 COPY public.subcategory (category_id, id, name) FROM stdin;
-1	1	Футболки
 1	2	Джинсы
 1	3	Куртки
 1	4	Шорты
@@ -1151,6 +1175,8 @@ COPY public.subcategory (category_id, id, name) FROM stdin;
 1	13	Носки
 1	14	Перчатки
 1	15	Шарфы
+1	1	qwewqeйу
+1	18	wwww
 \.
 
 
@@ -1159,7 +1185,6 @@ COPY public.subcategory (category_id, id, name) FROM stdin;
 --
 
 COPY public.users (id, email, password, role, username) FROM stdin;
-1	Isobel_McDermott@hotmail.com	$2a$10$FVlANbA4yXTTknL8Z69gguLEfqla55Z6sTEb9gKNy7vgUywI72ipy	USER	Micheal
 3	Gaston_Mertz60@gmail.com	$2a$10$ycVpf9xyWAJ0D5sC74ppneSJQZ0dOOR/z1xZ8fTzxjwjPo0PEyVUC	USER	Odell
 4	Eldred.OReilly17@hotmail.com	$2a$10$ft1p3u1s67pM3TcJXws7LONzp.Qnr/C2e916bsbcSviiOnkXmmNHu	USER	Nathen
 5	Daphnee49@gmail.com	$2a$10$v7JsY1kIrL3X/VcJUf3GV.h.Qz9iVknhOK405e3CjpQIqsZ91Nsf2	USER	Miguel
@@ -1170,8 +1195,10 @@ COPY public.users (id, email, password, role, username) FROM stdin;
 10	Luisa.Tremblay71@gmail.com	$2a$10$.lMlDOvR1g6CeS7E84VmsuRE3L6Ya5FV1MYbSAQZepSlZnU08zOsO	USER	Augusta
 2	Lauryn.Green@yahoo.com	$2a$10$IvNbJA7xZlAkylIHXHOBj.4X1iJ6LY0fwoBWbVy1g5knpHB.JqfIS	ADMIN	Eli
 11	fromvue@gmail.com	$2a$10$DM38Bn4szyIVMvUiuF9l4eqZAHVY7pGsKnSVrTxwJDURIHrRd4/Zm	USER	fromvue
-12	nimur.lalov11@gmail.com	$2a$10$DkoFWhBFDq6sPPhTh4UQbuvaolUmnztD3qQA1W5VRKKya6uk.cAtG	USER	nimur
 13	test1@gmail.com	$2a$10$LB2X7BJSJmieZ.me5Zzjou7TsUGEWpDAS6DEZULr1mKLL3TIHOQTO	USER	test
+15	nimur.lalov111@gmail.com	\N	USER	\N
+1	Isobel_McDermott@hotmail.com	$2a$10$TT5hJukUxBlLPI2ERI0.mOgn7r/m59mFbsZuGPwI9R/Q/aXImjLom	USER	Micheal2
+12	nimur.lalov11@gmail.com	$2a$10$93xARZfEMlHS2knyok0GwuRSUxpfMkXQAlDvJr/wgdtz0KYh3vmpG	USER	nimur12
 \.
 
 
@@ -1185,6 +1212,7 @@ COPY public.wishlist (id, user_id) FROM stdin;
 3	6
 4	12
 5	13
+6	2
 \.
 
 
@@ -1196,11 +1224,13 @@ COPY public.wishlist_product (product_id, wishlist_id) FROM stdin;
 1	1
 2	2
 1	2
-9	4
 11	3
 1	3
 9	3
 1	5
+4	6
+9	4
+22	4
 \.
 
 
@@ -1208,21 +1238,21 @@ COPY public.wishlist_product (product_id, wishlist_id) FROM stdin;
 -- Name: brand_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.brand_id_seq', 5, true);
+SELECT pg_catalog.setval('public.brand_id_seq', 12, true);
 
 
 --
 -- Name: cart_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.cart_id_seq', 11, true);
+SELECT pg_catalog.setval('public.cart_id_seq', 12, true);
 
 
 --
 -- Name: cart_item_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.cart_item_id_seq', 34, true);
+SELECT pg_catalog.setval('public.cart_item_id_seq', 40, true);
 
 
 --
@@ -1236,14 +1266,14 @@ SELECT pg_catalog.setval('public.category_id_seq', 1, false);
 -- Name: order_item_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.order_item_id_seq', 16, true);
+SELECT pg_catalog.setval('public.order_item_id_seq', 26, true);
 
 
 --
 -- Name: orders_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.orders_id_seq', 10, true);
+SELECT pg_catalog.setval('public.orders_id_seq', 16, true);
 
 
 --
@@ -1257,21 +1287,21 @@ SELECT pg_catalog.setval('public.product_color_id_seq', 1, false);
 -- Name: product_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.product_id_seq', 17, true);
+SELECT pg_catalog.setval('public.product_id_seq', 24, true);
 
 
 --
 -- Name: product_variant_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.product_variant_id_seq', 15, true);
+SELECT pg_catalog.setval('public.product_variant_id_seq', 28, true);
 
 
 --
 -- Name: review_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.review_id_seq', 8, true);
+SELECT pg_catalog.setval('public.review_id_seq', 9, true);
 
 
 --
@@ -1285,21 +1315,21 @@ SELECT pg_catalog.setval('public.size_id_seq', 1, false);
 -- Name: subcategory_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.subcategory_id_seq', 1, false);
+SELECT pg_catalog.setval('public.subcategory_id_seq', 18, true);
 
 
 --
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.users_id_seq', 14, true);
+SELECT pg_catalog.setval('public.users_id_seq', 15, true);
 
 
 --
 -- Name: wishlist_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.wishlist_id_seq', 5, true);
+SELECT pg_catalog.setval('public.wishlist_id_seq', 6, true);
 
 
 --

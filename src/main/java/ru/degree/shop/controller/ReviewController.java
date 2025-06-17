@@ -29,4 +29,12 @@ public class ReviewController {
         String email = authentication.getName();
         return new ResponseEntity<>(reviewService.addReview(reviewPostDto, email), HttpStatus.CREATED);
     }
+
+    @GetMapping("/hasUserPurchased/{productId}")
+    public ResponseEntity<Boolean> getUserPurchased(@PathVariable Long productId
+            , Authentication authentication) {
+        String email = authentication.getName();
+
+        return new ResponseEntity<>(reviewService.hasUserPurchased(productId, email), HttpStatus.OK);
+    }
 }
